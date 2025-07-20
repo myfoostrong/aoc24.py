@@ -12,11 +12,9 @@ def part1():
 
 
 def check_safe(vals):
-    if len(vals) == 1:
-        return True
     if len(vals) < 2:
-        return False
-    go_up = (vals[0] - vals[1]) > 0
+        return True
+    go_up = (vals[1] - vals[0]) > 0
     for i, v in enumerate(vals):
         if i == 0:
             continue
@@ -47,20 +45,14 @@ def part2():
     return safe_reports
             
 def check_safe2(vals):
-    if len(vals) == 1:
-        return True
     if len(vals) < 2:
-        return False
-    go_up = (vals[0] - vals[1]) > 0
-    tolerance = True
+        return True
+    go_up = (vals[1] - vals[0]) > 0
     length = len(vals)
     for i, v in enumerate(vals):
         if i == 0:
             continue
         if not check_direction(vals[i-1], v, go_up):
-            if not tolerance:
-                return False
-            tolerance = False
             if i == length - 1:
                 return True
             if i == 1:
@@ -68,9 +60,13 @@ def check_safe2(vals):
                     return True
                 if check_safe([vals[0]] + vals[2:]):
                     return True
-            if check_direction(vals[i-1], vals[i+1], go_up):
-                continue
-            if check_direction(vals[i-2], v, go_up):
-                continue
+            if i == 2:
+                if check_safe(vals[1:]):
+                    return True
+            if check_safe(vals[:i]+vals[i+1:]):
+                return True
+            else:
+                if check_safe(vals[:i-1]+vals[i:]):
+                    return True
             return False
     return True
